@@ -1,0 +1,133 @@
+.body {
+  background-color: white !important;
+  font-family: "Inter" !important;
+}
+
+.calculator-card {
+  box-sizing: border-box;
+
+  background: #fafafa;
+  /* Color Usage/Stroke */
+
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.calculator-view-card {
+  box-sizing: border-box;
+
+  /* Gray/White */
+
+  background: #fafafa;
+  /* Color Usage/Stroke */
+
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.main-heading {
+  font-style: normal;
+  font-weight: 700 !important;
+  font-size: 20px;
+  line-height: 32px;
+
+  letter-spacing: -0.022px;
+
+  color: #000000;
+}
+
+.heading {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+
+  letter-spacing: -0.1px;
+
+  color: #000000;
+}
+
+.calcultor-heading {
+  /* display: flex;
+    justify-content: space-between; */
+
+  padding: 10px;
+  flex-flow: row wrap;
+}
+
+.reset-section {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+
+  color: #0052ea;
+}
+
+.sub-heading {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  /* identical to box height, or 167% */
+
+  /* Color Usage/Text Secondary */
+
+  color: #757575;
+}
+
+.add-button {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  /* identical to box height, or 143% */
+
+  /* Brand Colors / primary */
+
+  color: #0052ea;
+}
+
+.right-align-text {
+  text-align: right;
+}
+
+.result-heading {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+
+  letter-spacing: 0.2px;
+
+  color: #757575;
+}
+
+.result-row {
+  height: 1.7rem;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+
+  color: #000000;
+}
+
+.net-salary-section {
+  background: #ffffff;
+  /* Color Usage/Stroke */
+  /* Body - Large - Semibold */
+
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height, or 150% */
+
+  letter-spacing: -0.1px;
+
+  color: #000000;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
