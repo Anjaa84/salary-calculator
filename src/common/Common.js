@@ -1,30 +1,33 @@
-// export const addZeroes = (num) => {
-//   if (num) {
-//     var value = Number(num);
 
-//     var res = num.split(".");
 
-//     if (res.length == 1 || res[1].length < 3) {
-//       value = value.toFixed(2);
-//     }
-
-//     return value;
-//   }
-//   return 0;
-// };
 
 export const getEarningTotalValue = (list) => {
-  const sum = list?.reduce(
-    (num, { earningValue }) => Number(num) + earningValue,
+  const sum = list.reduce(
+    (num, { earningValue }) => Number(num) + Number(removeComma(earningValue)),
     0
   );
-  return sum;
+  return parseFloat(sum).toFixed(2);
 };
 
 export const getDeductionTotalValue = (list) => {
-  const sum = list?.reduce(
-    (num, { deductionValue }) => Number(num) + deductionValue,
+  const sum = list.reduce(
+    (num, { deductionValue }) => Number(num) + Number(removeComma(deductionValue)),
     0
   );
   return sum;
+
 };
+
+
+export const currencyMask = (e) => {
+ let value = e.target.value;
+
+
+ e.target.value = value;
+ return e;
+
+};
+
+export const removeComma = num => num?.replace(/,/g, '');
+
+

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-// import { Card, Icon ,Input} from "semantic-ui-react";
+import React, { useState } from "react";
+
 import {
   Row,
   Col,
@@ -12,18 +12,17 @@ import {
 import "./calculator.css";
 import reset from "../../assets/images/reset.svg";
 import deleteIcon from "../../assets/images/delete.svg";
-
-import { CiCircleRemove } from "react-icons/ci";
 import { AiOutlinePlus } from "react-icons/ai";
 import {
   getDeductionTotalValue,
   getEarningTotalValue,
+  currencyMask,
+  removeComma,
 } from "../../common/Common";
 import { HEADING } from "../../common/const";
 import CalculatorResultRow from "./calcular-result-row";
 const Calculator = () => {
   const [earningList, setEarningList] = useState([{ earningValue: "" }]);
-  const [earningListEpf, setEarningListEpf] = useState([{ earningValue: "" }]);
   const [deductionList, setDeductionList] = useState([{ deductionValue: "" }]);
   const [epfSum, setEpfSum] = useState(null);
   const [checked, setChecked] = useState([]);
@@ -32,20 +31,21 @@ const Calculator = () => {
 
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
+
     if (name === "earningValue") {
       const list = [...earningList];
-      list[index][name] = Number(value);
+      list[index][name] = value;
       setEarningList(list);
     }
 
     if (name === "deductionValue") {
       const list = [...deductionList];
-      list[index][name] = Number(value);
+      list[index][name] = value;
       setDeductionList(list);
     }
 
     if (name === "basicSalary") {
-      setBasicSalary(Number(value));
+      setBasicSalary(value);
     }
   };
 
@@ -58,14 +58,20 @@ const Calculator = () => {
 
   const handleEarningRemoveClick = (index) => {
     const list = [...earningList];
-    list.splice(index, 1);
-    setEarningList(list);
+
+    list.splice(0, 1);
+
+    list.length ? setEarningList(list) : setEarningList([{ earningValue: "" }]);
   };
 
   const handleDeductionRemoveClick = (index) => {
     const list = [...deductionList];
+
     list.splice(index, 1);
-    setDeductionList(list);
+
+    list.length
+      ? setDeductionList(list)
+      : setDeductionList([{ deductionValue: "" }]);
   };
 
   const indexCounter = (event, index) => {
@@ -75,47 +81,86 @@ const Calculator = () => {
     } else {
       updatedList.splice(checked.indexOf(event.target.value), 1);
     }
-    let list = [];
+    const list = [];
     setChecked(updatedList);
-    updatedList.map((number) => {
+    for (const number of updatedList) {
       list.push(earningList[Number(number)]);
-    });
+    }
 
-    setEarningListEpf(list);
     const sum = getEarningTotalValue(list);
+
     setEpfSum(sum);
   };
   const calculateEpf = (percent) => {
-    return epfSum
-      ? (Number(basicSalary) + Number(epfSum)) * (Number(percent) / 100)
-      : 0;
+    let value =
+      (Number(removeComma(basicSalary)) + Number(epfSum)) *
+      (Number(percent) / 100);
+   
+    return (value);
+  };
+
+  const calculateGrossEarning = () => {
+    const sum =
+      Number(getEarningTotalValue(earningList)) +
+      Number(removeComma(basicSalary));
+    return sum
   };
 
   const calculateNetSalary = () => {
-    const result =
-      Number(basicSalary) +
+    let result =
+      Number(removeComma(basicSalary)) +
       Number(getEarningTotalValue(earningList)) -
       Number(getDeductionTotalValue(deductionList)) -
-      Number(calculateEpf(8));
+      Number((calculateEpf(8)));
+
+
 
     return result;
   };
 
   const calculateCTC = () => {
-    const result =
-      Number(basicSalary) +
-      Number(getEarningTotalValue(earningList)) -
+    let result =
+      Number(calculateGrossEarning()) -
       Number(getDeductionTotalValue(deductionList)) +
-      Number(calculateEpf(12) + Number(calculateEpf(12)));
-
-    return result;
+      Number((calculateEpf(12)) + Number((calculateEpf(3))));
+    
+    return result
   };
 
   const resetData = () => {
     setBasicSalary("");
     setEarningList([{ earningValue: "" }]);
     setDeductionList([{ deductionValue: "" }]);
+    setEpfSum(null);
   };
+
+  // setBasicSalary(addCommas((event.target.value)));
+  const onBlur = (e, index) => {
+    const { name, value } = e.target;
+
+    if (name === "earningValue") {
+      const list = [...earningList];
+      list[index][name] = Number(value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      });
+      setEarningList(list);
+    }
+
+    if (name === "deductionValue") {
+      const list = [...deductionList];
+      list[index][name] = Number(value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+      });
+      setDeductionList(list);
+    }
+
+    if (name === "basicSalary") {
+      setBasicSalary(
+        Number(value).toLocaleString(undefined, { minimumFractionDigits: 2 })
+      );
+    }
+  };
+
   return (
     <>
       <Row className="p-4 mb-2">
@@ -143,9 +188,11 @@ const Calculator = () => {
                 <Row className="col-5">
                   <InputGroup className="mb-3">
                     <Form.Control
+                      type="text"
                       name="basicSalary"
                       value={basicSalary}
-                      onChange={(e) => handleInputChange(e)}
+                      onBlur={(e) => onBlur(e)}
+                      onChange={(e) => handleInputChange(currencyMask(e))}
                     />
                   </InputGroup>
                 </Row>
@@ -165,7 +212,9 @@ const Calculator = () => {
                         <Col className="col-5 ">
                           <InputGroup className="mb-3">
                             <Form.Control
+                              type="text"
                               name="earningValue"
+                              onBlur={(e) => onBlur(e, index)}
                               value={data.earningValue}
                               onChange={(e) => handleInputChange(e, index)}
                             />
@@ -215,11 +264,13 @@ const Calculator = () => {
                 <Row>
                   {deductionList.map((data, index) => {
                     return (
-                      <>
+                      <Row>
                         <Col className="col-5">
                           <InputGroup className="mb-3">
                             <Form.Control
                               name="deductionValue"
+                              type="text"
+                              onBlur={(e) => onBlur(e, index)}
                               value={data.deductionValue}
                               onChange={(e) => handleInputChange(e, index)}
                             />
@@ -235,7 +286,7 @@ const Calculator = () => {
                             ></Image>
                           )}
                         </Col>
-                      </>
+                      </Row>
                     );
                   })}
                 </Row>
@@ -259,10 +310,12 @@ const Calculator = () => {
           <Card className="calculator-view-card p-2 m-2 ">
             <Container className=" m-1">
               <Row className="m-1">
-                <Col className="col-10 main-heading p-0 pb-2 ">{HEADING.SALARY_RESULT}</Col>
+                <Col className="col-10 main-heading p-0 pb-2 ">
+                  {HEADING.SALARY_RESULT}
+                </Col>
               </Row>
               <Container className="p-0 m-0 result-heading ">
-                <Row className=" m-1" >
+                <Row className=" m-1">
                   <Col className="col-8 p-0 ">
                     <p className="left-align-text ">Items</p>
                   </Col>
@@ -272,18 +325,25 @@ const Calculator = () => {
                 </Row>
               </Container>
 
-              <CalculatorResultRow item="Basic Salary" value={basicSalary} />
+              <CalculatorResultRow
+                item="Basic Salary"
+                value={basicSalary ? basicSalary : null}
+              />
               <CalculatorResultRow
                 item="Gross Earnings"
-                value={getEarningTotalValue(earningList)}
+                value={
+                  isNaN(calculateGrossEarning())
+                    ? "0.00"
+                    : calculateGrossEarning().toLocaleString(undefined, { minimumFractionDigits: 2 })
+                }
               />
               <CalculatorResultRow
                 item="Gross Deduction"
-                value={getDeductionTotalValue(deductionList)}
+                value={getDeductionTotalValue(deductionList).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
               <CalculatorResultRow
                 item="Employee EPF (8%)"
-                value={calculateEpf(8)}
+                value={calculateEpf(8).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
 
               <Container className="p-1 mt-2 mb-3 net-salary-section ">
@@ -293,7 +353,7 @@ const Calculator = () => {
                   </Col>
                   <Col className="col-4">
                     <p className=" right-align-text mb-1">
-                      {calculateNetSalary()}
+                     {calculateNetSalary().toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </p>
                   </Col>
                 </Row>
@@ -305,15 +365,15 @@ const Calculator = () => {
 
               <CalculatorResultRow
                 item="Employeer EPF (12%)"
-                value={calculateEpf(12)}
+                value={calculateEpf(12).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
               <CalculatorResultRow
-                item="Employeer EPF (3%)"
-                value={calculateEpf(3)}
+                item="Employeer ETF (3%)"
+                value={calculateEpf(3).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
               <CalculatorResultRow
                 item="CTC (Cost to Company)"
-                value={calculateCTC()}
+                value={calculateCTC().toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
             </Container>
           </Card>
