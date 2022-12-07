@@ -327,7 +327,7 @@ const Calculator = () => {
 
               <CalculatorResultRow
                 item="Basic Salary"
-                value={basicSalary ? basicSalary : null}
+                value={basicSalary ? basicSalary : "0.00"}
               />
               <CalculatorResultRow
                 item="Gross Earnings"
@@ -368,9 +368,10 @@ const Calculator = () => {
                 value={calculateEpf(12).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
               <CalculatorResultRow
-                item="Employeer ETF (3%)"
+                item="Em{ployeer ETF (3%)"
                 value={calculateEpf(3).toLocaleString(undefined, { minimumFractionDigits: 2 })}
               />
+
               <CalculatorResultRow
                 item="CTC (Cost to Company)"
                 value={calculateCTC().toLocaleString(undefined, { minimumFractionDigits: 2 })}

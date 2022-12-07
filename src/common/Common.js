@@ -28,6 +28,6 @@ export const currencyMask = (e) => {
 
 };
 
-export const removeComma = num => num?.replace(/,/g, '');
+export const removeComma = num => num?num.replace(/,/g, ''):null
 
 
