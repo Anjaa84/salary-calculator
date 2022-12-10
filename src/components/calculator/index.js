@@ -140,7 +140,7 @@ const Calculator = () => {
 
     if (name === "earningValue") {
       const list = [...earningList];
-      list[index][name] = Number(value).toLocaleString(undefined, {
+      list[index][name] = Number(removeComma(value)).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
       setEarningList(list);
@@ -148,17 +148,21 @@ const Calculator = () => {
 
     if (name === "deductionValue") {
       const list = [...deductionList];
-      list[index][name] = Number(value).toLocaleString(undefined, {
+      list[index][name] = Number(removeComma(value)).toLocaleString(undefined, {
         minimumFractionDigits: 2,
       });
       setDeductionList(list);
     }
 
     if (name === "basicSalary") {
+      console.log("hi")
       setBasicSalary(
-        Number(value).toLocaleString(undefined, { minimumFractionDigits: 2 })
+        Number(removeComma(value)).toLocaleString(undefined, { minimumFractionDigits: 2 })
       );
+
+      console.log("basic",basicSalary)
     }
+ 
   };
 
   return (
