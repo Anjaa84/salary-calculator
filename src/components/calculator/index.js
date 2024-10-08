@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Switch, Input, Typography } from "antd";
+import { Switch, Input, Typography, Image, Row, Col } from "antd";
+import { Logo } from "../../assets";
 
 const { Title } = Typography;
 
@@ -33,7 +34,23 @@ const Calculator = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Title level={2}>Manual Entry Calculator</Title>
+      <Row align="middle" style={{ marginBottom: "20px" }}>
+        <Col>
+          <Image
+            paddingLeft="100px"
+            src={Logo} // Replace with your logo URL
+            alt="Monik Homes Logo"
+            width={100} // Set the desired width
+            height={100} // Set the desired height
+            // Add margin for spacing
+          />
+        </Col>
+        <Col>
+          <Title level={2} style={{ margin: "0 0 0 20px" }}>
+            Monik Homes CAL Calculator
+          </Title>
+        </Col>
+      </Row>
 
       <div style={{ marginBottom: "10px" }}>
         <label>Items Price: </label>
@@ -104,9 +121,21 @@ const Calculator = () => {
       <p>Total Interest: {totalInterest.toFixed(2)}</p>
 
       {/* Highlighting Rental */}
-      <p style={{ fontSize: "1.5em", fontWeight: "bold", color: "#1890ff" }}>
+      <p style={{ fontSize: "1.5em", fontWeight: "bold", color: "#00008B" }}>
         Rental (Per Month): {rental.toFixed(2)}
       </p>
+
+      {/* Contact Information Section */}
+      <div
+        style={{
+          marginTop: "30px",
+          textAlign: "center",
+          fontSize: "16px",
+          color: "gray",
+        }}
+      >
+        Need help? Contact at 0770733334 for any inquiries
+      </div>
     </div>
   );
 };
