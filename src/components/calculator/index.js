@@ -28,6 +28,10 @@ const Calculator = () => {
   const [checked, setChecked] = useState([]);
 
   const [basicSalary, setBasicSalary] = useState(null);
+  const [itemPrice, setItemPrice] = useState(null);
+  const [downPayment, setDownPayment] = useState(null);
+  const [interestRate, setInterestRate] = useState(null);
+  const [duration, setDuration] = useState(null);
 
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
@@ -44,8 +48,17 @@ const Calculator = () => {
       setDeductionList(list);
     }
 
-    if (name === "basicSalary") {
+    if (name === "itemPrice") {
       setBasicSalary(value);
+    }
+    if (name === "downPayment") {
+      setDownPayment(value);
+    }
+    if (name === "interestRate") {
+      setInterestRate(value);
+    }
+    if (name === "duration") {
+      setDuration(value);
     }
   };
 
@@ -95,15 +108,15 @@ const Calculator = () => {
     let value =
       (Number(removeComma(basicSalary)) + Number(epfSum)) *
       (Number(percent) / 100);
-   
-    return (value);
+
+    return value;
   };
 
   const calculateGrossEarning = () => {
     const sum =
       Number(getEarningTotalValue(earningList)) +
       Number(removeComma(basicSalary));
-    return sum
+    return sum;
   };
 
   const calculateNetSalary = () => {
@@ -111,9 +124,7 @@ const Calculator = () => {
       Number(removeComma(basicSalary)) +
       Number(getEarningTotalValue(earningList)) -
       Number(getDeductionTotalValue(deductionList)) -
-      Number((calculateEpf(8)));
-
-
+      Number(calculateEpf(8));
 
     return result;
   };
@@ -122,9 +133,9 @@ const Calculator = () => {
     let result =
       Number(calculateGrossEarning()) -
       Number(getDeductionTotalValue(deductionList)) +
-      Number((calculateEpf(12)) + Number((calculateEpf(3))));
-    
-    return result
+      Number(calculateEpf(12) + Number(calculateEpf(3)));
+
+    return result;
   };
 
   const resetData = () => {
@@ -183,13 +194,30 @@ const Calculator = () => {
 
               <Container className="p-0 m-0 pt-2">
                 <Row className="heading pb-1">
-                  <div>Basic Salary</div>
+                  <div>Item Price</div>
                 </Row>
                 <Row className="col-5">
                   <InputGroup className="mb-3">
                     <Form.Control
                       type="text"
-                      name="basicSalary"
+                      name="itemPrice"
+                      value={itemPrice}
+                      onBlur={(e) => onBlur(e)}
+                      onChange={(e) => handleInputChange(currencyMask(e))}
+                    />
+                  </InputGroup>
+                </Row>
+              </Container>
+
+              <Container className="p-0 m-0 pt-2">
+                <Row className="heading pb-1">
+                  <div>Down Payment</div>
+                </Row>
+                <Row className="col-5">
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      type="text"
+                      name="downPayment"
                       value={basicSalary}
                       onBlur={(e) => onBlur(e)}
                       onChange={(e) => handleInputChange(currencyMask(e))}
@@ -198,109 +226,36 @@ const Calculator = () => {
                 </Row>
               </Container>
 
-              <Container className="p-0 m-0">
-                <Row>
-                  <div className="heading">{HEADING.EARNINGS}</div>
-                  <div className="sub-heading pb-1">
-                    Allowance, Fixed Allowance, Bonus and etc.
-                  </div>
+              <Container className="p-0 m-0 pt-2">
+                <Row className="heading pb-1">
+                  <div>Interest Rate</div>
                 </Row>
-                <Row>
-                  {earningList.map((data, index) => {
-                    return (
-                      <>
-                        <Col className="col-5 ">
-                          <InputGroup className="mb-3">
-                            <Form.Control
-                              type="text"
-                              name="earningValue"
-                              onBlur={(e) => onBlur(e, index)}
-                              value={data.earningValue}
-                              onChange={(e) => handleInputChange(e, index)}
-                            />
-                          </InputGroup>
-                        </Col>
-
-                        <Col className="col-1 p-0">
-                          {earningList.length !== 0 && (
-                            <Image
-                              src={deleteIcon}
-                              onClick={() => handleEarningRemoveClick(index)}
-                              className="pe-2"
-                            ></Image>
-                          )}
-                        </Col>
-                        <Col className="col-2 p-0">
-                          <Form.Check
-                            type="checkbox"
-                            id={`default`}
-                            value={index}
-                            label={`EPF/ETF `}
-                            onChange={(e) => indexCounter(e, index)}
-                          />
-                        </Col>
-                      </>
-                    );
-                  })}
-                </Row>
-                <Row className=" add-button m-0 p-0">
-                  <Col className="col-1 ">
-                    {earningList.length && (
-                      <AiOutlinePlus onClick={handleEarningAddClick} />
-                    )}
-                  </Col>
-
-                  <Col className=" m-0 p-0">Add New Allowance</Col>
+                <Row className="col-5">
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      type="text"
+                      name="interestRate"
+                      value={interestRate}
+                      onBlur={(e) => onBlur(e)}
+                      onChange={(e) => handleInputChange(currencyMask(e))}
+                    />
+                  </InputGroup>
                 </Row>
               </Container>
-
-              <Container className="p-0 m-0 pt-3">
-                <Row>
-                  <div className="heading">{HEADING.DEDUCTIONS}</div>
-                  <div className="sub-heading pb-1">
-                    Salary Advances, Loan Deductions and all
-                  </div>
+              <Container className="p-0 m-0 pt-2">
+                <Row className="heading pb-1">
+                  <div>Duration</div>
                 </Row>
-                <Row>
-                  {deductionList.map((data, index) => {
-                    return (
-                      <Row>
-                        <Col className="col-5">
-                          <InputGroup className="mb-3">
-                            <Form.Control
-                              name="deductionValue"
-                              type="text"
-                              onBlur={(e) => onBlur(e, index)}
-                              value={data.deductionValue}
-                              onChange={(e) => handleInputChange(e, index)}
-                            />
-                          </InputGroup>
-                        </Col>
-
-                        <Col className="col-1 p-0">
-                          {deductionList.length !== 0 && (
-                            <Image
-                              src={deleteIcon}
-                              onClick={() => handleDeductionRemoveClick(index)}
-                              className="pe-2"
-                            ></Image>
-                          )}
-                        </Col>
-                      </Row>
-                    );
-                  })}
-                </Row>
-                <Row className=" add-button m-0 p-0">
-                  <Col className="col-1 ">
-                    {deductionList.length && (
-                      <AiOutlinePlus
-                        size={15}
-                        onClick={handleDeductionAddClick}
-                      />
-                    )}
-                  </Col>
-
-                  <Col className=" m-0 p-0 ">Add New Deduction</Col>
+                <Row className="col-5">
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      type="text"
+                      name="duration"
+                      value={duration}
+                      onBlur={(e) => onBlur(e)}
+                      onChange={(e) => handleInputChange(currencyMask(e))}
+                    />
+                  </InputGroup>
                 </Row>
               </Container>
             </Container>
@@ -334,16 +289,23 @@ const Calculator = () => {
                 value={
                   isNaN(calculateGrossEarning())
                     ? "0.00"
-                    : calculateGrossEarning().toLocaleString(undefined, { minimumFractionDigits: 2 })
+                    : calculateGrossEarning().toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })
                 }
               />
               <CalculatorResultRow
                 item="Gross Deduction"
-                value={getDeductionTotalValue(deductionList).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                value={getDeductionTotalValue(deductionList).toLocaleString(
+                  undefined,
+                  { minimumFractionDigits: 2 }
+                )}
               />
               <CalculatorResultRow
                 item="Employee EPF (8%)"
-                value={calculateEpf(8).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                value={calculateEpf(8).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
               />
 
               <Container className="p-1 mt-2 mb-3 net-salary-section ">
@@ -353,7 +315,9 @@ const Calculator = () => {
                   </Col>
                   <Col className="col-4">
                     <p className=" right-align-text mb-1">
-                     {calculateNetSalary().toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      {calculateNetSalary().toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </Col>
                 </Row>
@@ -365,16 +329,22 @@ const Calculator = () => {
 
               <CalculatorResultRow
                 item="Employeer EPF (12%)"
-                value={calculateEpf(12).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                value={calculateEpf(12).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
               />
               <CalculatorResultRow
                 item="Em{ployeer ETF (3%)"
-                value={calculateEpf(3).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                value={calculateEpf(3).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
               />
 
               <CalculatorResultRow
                 item="CTC (Cost to Company)"
-                value={calculateCTC().toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                value={calculateCTC().toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                })}
               />
             </Container>
           </Card>
