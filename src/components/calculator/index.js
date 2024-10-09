@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Input, Typography, Row, Col } from "antd";
+import { Input, Typography, Row, Col, Image } from "antd";
+import { Logo } from "../../assets";
 
 const { Title } = Typography;
 
@@ -34,8 +35,23 @@ const LoanCalculator = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Title level={2}>Loan Calculator - Monik / CMC</Title>
-
+      <Row align="middle" style={{ marginBottom: "20px" }}>
+        <Col>
+          <Image
+            paddingLeft="100px"
+            src={Logo} // Replace with your logo URL
+            alt="Monik Homes Logo"
+            width={100} // Set the desired width
+            height={100} // Set the desired height
+            // Add margin for spacing
+          />
+        </Col>
+        <Col>
+          <Title level={2} style={{ margin: "0 0 0 20px" }}>
+            Monik Homes CAL Calculator
+          </Title>
+        </Col>
+      </Row>
       <div style={{ marginBottom: "10px" }}>
         <label>Lease/Loan Amount: </label>
         <Input
