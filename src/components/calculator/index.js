@@ -1,95 +1,58 @@
 import React, { useState } from "react";
-import { Switch, Input, Typography, Image, Row, Col } from "antd";
-import { Logo } from "../../assets";
+import { Input, Typography, Row, Col } from "antd";
 
 const { Title } = Typography;
 
-const Calculator = () => {
-  const [itemsPrice, setItemsPrice] = useState(""); // Initialize as empty
-  const [downPaymentMode, setDownPaymentMode] = useState(false); // false for amount, true for percentage
-  const [minDownPayment, setMinDownPayment] = useState(""); // Initialize as empty
-  const [otherPayment, setOtherPayment] = useState(""); // Initialize as empty
-  const [interestRate, setInterestRate] = useState(""); // Initialize as empty
-  const [duration, setDuration] = useState(""); // Initialize as empty
+const LoanCalculator = () => {
+  const [leaseAmount, setLeaseAmount] = useState("");
+  const [otherCharges, setOtherCharges] = useState("");
+  const [interestRate, setInterestRate] = useState("");
+  const [duration, setDuration] = useState("");
+  const [documentChargesPercentage, setDocumentChargesPercentage] =
+    useState("");
 
   // Convert string inputs to numbers safely, defaulting to 0 if empty
-  const parsedItemsPrice = parseFloat(itemsPrice) || 0;
-  const parsedMinDownPayment = parseFloat(minDownPayment) || 0;
-  const parsedOtherPayment = parseFloat(otherPayment) || 0;
+  const parsedLeaseAmount = parseFloat(leaseAmount) || 0;
+  const parsedOtherCharges = parseFloat(otherCharges) || 0;
   const parsedInterestRate = parseFloat(interestRate) || 0;
   const parsedDuration = parseFloat(duration) || 1; // Avoid division by 0, default to 1
-
-  // Calculate down payment based on the mode (percentage or fixed amount)
-  const downPayment = downPaymentMode
-    ? (parsedMinDownPayment / 100) * parsedItemsPrice // If percentage mode, calculate down payment as percentage
-    : parsedMinDownPayment; // If fixed amount mode, use the input value directly
+  const parsedDocumentChargesPercentage =
+    parseFloat(documentChargesPercentage) || 0;
 
   // Calculations
-  const balanceAmount = parsedItemsPrice - (downPayment + parsedOtherPayment);
-  const serviceCharge = balanceAmount * 0.05; // 5% of the loan amount
-  const loanAmount = balanceAmount + serviceCharge;
   const totalInterest =
-    (parsedInterestRate / 100) * loanAmount * parsedDuration;
-  const rental = (totalInterest + loanAmount) / parsedDuration;
+    (parsedInterestRate / 100) *
+    parsedDuration *
+    (parsedLeaseAmount + parsedOtherCharges);
+  const agreedAmount = parsedLeaseAmount + parsedOtherCharges + totalInterest;
+  const rental = agreedAmount / parsedDuration;
+
+  // Document Charges calculations
+  const documentChargesAmount =
+    (parsedDocumentChargesPercentage / 100) * parsedLeaseAmount;
+  const releaseAmount = parsedLeaseAmount - documentChargesAmount;
 
   return (
     <div style={{ padding: "20px" }}>
-      <Row align="middle" style={{ marginBottom: "20px" }}>
-        <Col>
-          <Image
-            paddingLeft="100px"
-            src={Logo} // Replace with your logo URL
-            alt="Monik Homes Logo"
-            width={100} // Set the desired width
-            height={100} // Set the desired height
-            // Add margin for spacing
-          />
-        </Col>
-        <Col>
-          <Title level={2} style={{ margin: "0 0 0 20px" }}>
-            Monik Homes CAL Calculator
-          </Title>
-        </Col>
-      </Row>
+      <Title level={2}>Loan Calculator - Monik / CMC</Title>
 
       <div style={{ marginBottom: "10px" }}>
-        <label>Items Price: </label>
+        <label>Lease/Loan Amount: </label>
         <Input
           type="number"
-          value={itemsPrice}
-          onChange={(e) => setItemsPrice(e.target.value)}
-          placeholder="Enter items price"
+          value={leaseAmount}
+          onChange={(e) => setLeaseAmount(e.target.value)}
+          placeholder="Enter Lease/Loan Amount"
         />
       </div>
 
       <div style={{ marginBottom: "10px" }}>
-        <label>
-          Min Down Payment Mode: &nbsp;
-          <Switch
-            checked={downPaymentMode}
-            onChange={(checked) => setDownPaymentMode(checked)}
-          />
-          &nbsp; {downPaymentMode ? "Percentage" : "Amount"}
-        </label>
-      </div>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label>Min Down Payment ({downPaymentMode ? "%" : "Amount"}):</label>
+        <label>Other Charges: </label>
         <Input
           type="number"
-          value={minDownPayment}
-          onChange={(e) => setMinDownPayment(e.target.value)}
-          placeholder="Enter down payment"
-        />
-      </div>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label>Other Payment: </label>
-        <Input
-          type="number"
-          value={otherPayment}
-          onChange={(e) => setOtherPayment(e.target.value)}
-          placeholder="Enter other payment"
+          value={otherCharges}
+          onChange={(e) => setOtherCharges(e.target.value)}
+          placeholder="Enter Other Charges"
         />
       </div>
 
@@ -99,7 +62,7 @@ const Calculator = () => {
           type="number"
           value={interestRate}
           onChange={(e) => setInterestRate(e.target.value)}
-          placeholder="Enter interest rate"
+          placeholder="Enter Interest Rate"
         />
       </div>
 
@@ -109,35 +72,28 @@ const Calculator = () => {
           type="number"
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
-          placeholder="Enter duration in months"
+          placeholder="Enter Duration"
+        />
+      </div>
+
+      <div style={{ marginBottom: "10px" }}>
+        <label>Document Charges (%): </label>
+        <Input
+          type="number"
+          value={documentChargesPercentage}
+          onChange={(e) => setDocumentChargesPercentage(e.target.value)}
+          placeholder="Enter Document Charges Percentage"
         />
       </div>
 
       <Title level={3}>Results</Title>
-      <p>Min Down Payment: {downPayment.toFixed(2)}</p>
-      <p>Balance Amount: {balanceAmount.toFixed(2)}</p>
-      <p>Service Charge (5%): {serviceCharge.toFixed(2)}</p>
-      <p>Loan Amount: {loanAmount.toFixed(2)}</p>
       <p>Total Interest: {totalInterest.toFixed(2)}</p>
-
-      {/* Highlighting Rental */}
-      <p style={{ fontSize: "1.5em", fontWeight: "bold", color: "#00008B" }}>
-        Rental (Per Month): {rental.toFixed(2)}
-      </p>
-
-      {/* Contact Information Section */}
-      <div
-        style={{
-          marginTop: "30px",
-          textAlign: "center",
-          fontSize: "16px",
-          color: "gray",
-        }}
-      >
-        Need help? Contact at 0770733334 for any inquiries
-      </div>
+      <p>Agreed Amount: {agreedAmount.toFixed(2)}</p>
+      <p>Rental (Per Month): {rental.toFixed(2)}</p>
+      <p>Document Charges Amount: {documentChargesAmount.toFixed(2)}</p>
+      <p>Release Amount: {releaseAmount.toFixed(2)}</p>
     </div>
   );
 };
 
-export default Calculator;
+export default LoanCalculator;
