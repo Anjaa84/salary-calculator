@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input, Typography, Row, Col, Image } from "antd";
-import { Logo } from "../../assets";
+import { Logo, Logo2 } from "../../assets";
 
 const { Title } = Typography;
 
@@ -40,6 +40,16 @@ const LoanCalculator = () => {
           <Image
             paddingLeft="100px"
             src={Logo} // Replace with your logo URL
+            alt="Monik Homes Logo"
+            width={100} // Set the desired width
+            height={100} // Set the desired height
+            // Add margin for spacing
+          />
+        </Col>
+        <Col>
+          <Image
+            paddingLeft="100px"
+            src={Logo2} // Replace with your logo URL
             alt="Monik Homes Logo"
             width={100} // Set the desired width
             height={100} // Set the desired height
@@ -108,6 +118,18 @@ const LoanCalculator = () => {
       <p>Rental (Per Month): {rental.toFixed(2)}</p>
       <p>Document Charges Amount: {documentChargesAmount.toFixed(2)}</p>
       <p>Release Amount: {releaseAmount.toFixed(2)}</p>
+
+      {/* Contact Information Section */}
+      <div
+        style={{
+          marginTop: "30px",
+          textAlign: "center",
+          fontSize: "16px",
+          color: "gray",
+        }}
+      >
+        TODAY is another chance to get BETTER
+      </div>
     </div>
   );
 };
