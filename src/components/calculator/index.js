@@ -47,7 +47,7 @@ const PhoneLoanCalculator = () => {
       </Row>
 
       <div style={{ marginBottom: "10px" }}>
-        <label>Price: </label>
+        <label>H/P Price </label>
         <Input
           type="number"
           value={price}
@@ -82,9 +82,11 @@ const PhoneLoanCalculator = () => {
       <p>Down Payment: {downPayment.toFixed(2)}</p>
       <p>Facility Amount: {facilityAmount.toFixed(2)}</p>
       <p>Service Charge: {serviceCharge.toFixed(2)}</p>
-      <p>Rental Amount (Monthly): {rentalAmount.toFixed(2)}</p>
-      <p style={{ fontWeight: "bold", color: "#00008B" }}>
-        Initial Pay: {initialPay.toFixed(2)}
+       <p style={{ fontWeight: "bold", color: "red",fontSize:"24px" }}>
+        Rental Amount (Monthly): {rentalAmount.toFixed(2)}
+      </p>
+      <p style={{ fontWeight: "bold", color: "#00008B",fontSize:"28px" }}>
+        Initial Payment: {initialPay.toFixed(2)}
       </p>
 
       <div
