@@ -1,95 +1,58 @@
 import React, { useState } from "react";
-import { Input, Typography, Row, Col, Image } from "antd";
-import { Logo, Logo2 } from "../../assets";
+import { Input, Typography, Row, Col, Select ,Image} from "antd";
+import { InitialPayLogo } from "../../assets";
 
 const { Title } = Typography;
+const { Option } = Select;
 
-const LoanCalculator = () => {
-  const [leaseAmount, setLeaseAmount] = useState("");
-  const [otherCharges, setOtherCharges] = useState("");
-  const [interestRate, setInterestRate] = useState("");
+const PhoneLoanCalculator = () => {
+  const [price, setPrice] = useState("");
   const [duration, setDuration] = useState("");
-  const [documentChargesPercentage, setDocumentChargesPercentage] =
-    useState("");
+  const [userType, setUserType] = useState("customer"); // Default to customer
 
   // Convert string inputs to numbers safely, defaulting to 0 if empty
-  const parsedLeaseAmount = parseFloat(leaseAmount) || 0;
-  const parsedOtherCharges = parseFloat(otherCharges) || 0;
-  const parsedInterestRate = parseFloat(interestRate) || 0;
+  const parsedPrice = parseFloat(price) || 0;
   const parsedDuration = parseFloat(duration) || 1; // Avoid division by 0, default to 1
-  const parsedDocumentChargesPercentage =
-    parseFloat(documentChargesPercentage) || 0;
 
-  // Calculations
-  const totalInterest =
-    (parsedInterestRate / 100) *
-    parsedDuration *
-    (parsedLeaseAmount + parsedOtherCharges);
-  const agreedAmount = parsedLeaseAmount + parsedOtherCharges + totalInterest;
-  const rental = agreedAmount / parsedDuration;
-  const weeklyRental = rental / 4;
+  // Down Payment calculation
+  const downPaymentRate = userType === "customer" ? 0.25 : 0.15;
+  const downPayment = parsedPrice * downPaymentRate;
 
-  // Document Charges calculations
-  const documentChargesAmount =
-    (parsedDocumentChargesPercentage / 100) * parsedLeaseAmount;
-  const releaseAmount = parsedLeaseAmount - documentChargesAmount;
+  // Facility Amount
+  const facilityAmount = parsedPrice - downPayment;
+
+  // Service Charge (5% of Facility Amount)
+  const serviceCharge = facilityAmount * 0.05;
+
+  // Rental Amount
+  const rentalAmount = facilityAmount / parsedDuration;
+
+  // Initial Pay
+  const initialPay = downPayment + serviceCharge + rentalAmount;
 
   return (
     <div style={{ padding: "20px" }}>
-      <Row align="middle" style={{ marginBottom: "20px" }}>
+      <Row align="middle" gutter={16}>
         <Col>
           <Image
-            paddingLeft="100px"
-            src={Logo} // Replace with your logo URL
-            alt="Monik Homes Logo"
-            width={100} // Set the desired width
-            height={100} // Set the desired height
-            // Add margin for spacing
+            src={InitialPayLogo} // Replace with the actual logo URL or path
+            alt="Logo"
+            width={80}
+            height={80}
           />
         </Col>
         <Col>
-          <Image
-            paddingLeft="100px"
-            src={Logo2} // Replace with your logo URL
-            alt="Monik Homes Logo"
-            width={100} // Set the desired width
-            height={100} // Set the desired height
-            // Add margin for spacing
-          />
-        </Col>
-        <Col>
-          <Title level={2} style={{ margin: "0 0 0 20px" }}>
-            Loan Calculator Monik / CMC
-          </Title>
+          <Title level={2}>Phone Loan Calculator</Title>
         </Col>
       </Row>
-      <div style={{ marginBottom: "10px" }}>
-        <label>Lease/Loan Amount: </label>
-        <Input
-          type="number"
-          value={leaseAmount}
-          onChange={(e) => setLeaseAmount(e.target.value)}
-          placeholder="Enter Lease/Loan Amount"
-        />
-      </div>
 
       <div style={{ marginBottom: "10px" }}>
-        <label>Other Charges: </label>
+        <label>Price: </label>
         <Input
           type="number"
-          value={otherCharges}
-          onChange={(e) => setOtherCharges(e.target.value)}
-          placeholder="Enter Other Charges"
-        />
-      </div>
-
-      <div style={{ marginBottom: "10px" }}>
-        <label>Interest Rate (%): </label>
-        <Input
-          type="number"
-          value={interestRate}
-          onChange={(e) => setInterestRate(e.target.value)}
-          placeholder="Enter Interest Rate"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="Enter Price"
         />
       </div>
 
@@ -103,29 +66,27 @@ const LoanCalculator = () => {
         />
       </div>
 
-      <div style={{ marginBottom: "10px" }}>
-        <label>Document Charges (%): </label>
-        <Input
-          type="number"
-          value={documentChargesPercentage}
-          onChange={(e) => setDocumentChargesPercentage(e.target.value)}
-          placeholder="Enter Document Charges Percentage"
-        />
+      <div style={{ marginBottom: "10px",marginRight:"20px" }}>
+        <label>User Type: </label>
+        <Select
+          value={userType}
+          onChange={(value) => setUserType(value)}
+          style={{ width: 200 }}
+        >
+          <Option value="customer">Customer</Option>
+          <Option value="staff">Staff</Option>
+        </Select>
       </div>
 
       <Title level={3}>Results</Title>
-      <p>Total Interest: {totalInterest.toFixed(2)}</p>
-      <p>Agreed Amount: {agreedAmount.toFixed(2)}</p>
+      <p>Down Payment: {downPayment.toFixed(2)}</p>
+      <p>Facility Amount: {facilityAmount.toFixed(2)}</p>
+      <p>Service Charge: {serviceCharge.toFixed(2)}</p>
+      <p>Rental Amount (Monthly): {rentalAmount.toFixed(2)}</p>
       <p style={{ fontWeight: "bold", color: "#00008B" }}>
-        Rental (Per Week): {weeklyRental.toFixed(2)}
+        Initial Pay: {initialPay.toFixed(2)}
       </p>
-      <p style={{ fontWeight: "bold", color: "#00008B" }}>
-        Rental (Per Month): {rental.toFixed(2)}
-      </p>
-      <p>Document Charges Amount: {documentChargesAmount.toFixed(2)}</p>
-      <p>Release Amount: {releaseAmount.toFixed(2)}</p>
 
-      {/* Contact Information Section */}
       <div
         style={{
           marginTop: "30px",
@@ -134,10 +95,9 @@ const LoanCalculator = () => {
           color: "gray",
         }}
       >
-        TODAY is another chance to get BETTER
-      </div>
+Need help? Contact at 0770733334 for any inquiries      </div>
     </div>
   );
 };
 
-export default LoanCalculator;
+export default PhoneLoanCalculator;
