@@ -67,7 +67,7 @@ const PhoneLoanCalculator = () => {
       </div>
 
       <div style={{ marginBottom: "10px",marginRight:"20px" }}>
-        <label>User Type: </label>
+        <label style={{marginRight:"20px" }}>User Type: </label>
         <Select
           value={userType}
           onChange={(value) => setUserType(value)}
