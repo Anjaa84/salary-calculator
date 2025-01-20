@@ -22,7 +22,9 @@ const PhoneLoanCalculator = () => {
   const facilityAmount = parsedPrice - downPayment;
 
   // Service Charge (5% of Facility Amount)
-  const serviceCharge = facilityAmount * 0.05;
+  const serviceChargeRate = userType === "customer" ? 0.05 : 0.02;
+  const serviceCharge = facilityAmount * serviceChargeRate;
+
 
   // Rental Amount
   const rentalAmount = facilityAmount / parsedDuration;
