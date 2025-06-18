@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Switch, Input, Typography, Image, Row, Col } from "antd";
+import { Switch, Input, Typography, Image, Row, Col, Select } from "antd";
 import { Logo } from "../../assets";
 
 const { Title } = Typography;
@@ -9,15 +9,21 @@ const Calculator = () => {
   const [downPaymentMode, setDownPaymentMode] = useState(false); // false for amount, true for percentage
   const [minDownPayment, setMinDownPayment] = useState(""); // Initialize as empty
   const [otherPayment, setOtherPayment] = useState(""); // Initialize as empty
-  const [interestRate, setInterestRate] = useState(""); // Initialize as empty
-  const [duration, setDuration] = useState(""); // Initialize as empty
+  const [duration, setDuration] = useState(3); // Default to 3 months
+
+  // Map duration to interest rate
+  const durationInterestRateMap = {
+    3: 10,
+    6: 25,
+    12: 55,
+  };
 
   // Convert string inputs to numbers safely, defaulting to 0 if empty
   const parsedItemsPrice = parseFloat(itemsPrice) || 0;
   const parsedMinDownPayment = parseFloat(minDownPayment) || 0;
   const parsedOtherPayment = parseFloat(otherPayment) || 0;
-  const parsedInterestRate = parseFloat(interestRate) || 0;
-  const parsedDuration = parseFloat(duration) || 1; // Avoid division by 0, default to 1
+  const parsedDuration = parseInt(duration) || 3;
+  const parsedInterestRate = durationInterestRateMap[parsedDuration];
 
   // Calculate down payment based on the mode (percentage or fixed amount)
   const downPayment = downPaymentMode
@@ -26,10 +32,8 @@ const Calculator = () => {
 
   // Calculations
   const balanceAmount = parsedItemsPrice - (downPayment + parsedOtherPayment);
-  const serviceCharge = balanceAmount * 0.05; // 5% of the loan amount
-  const loanAmount = balanceAmount + serviceCharge;
-  const totalInterest =
-    (parsedInterestRate / 100) * loanAmount * parsedDuration;
+  const loanAmount = balanceAmount; // No service charge added
+  const totalInterest = (parsedInterestRate / 100) * loanAmount;
   const rental = (totalInterest + loanAmount) / parsedDuration;
 
   return (
@@ -94,31 +98,24 @@ const Calculator = () => {
       </div>
 
       <div style={{ marginBottom: "10px" }}>
-        <label>Interest Rate (%): </label>
-        <Input
-          type="number"
-          value={interestRate}
-          onChange={(e) => setInterestRate(e.target.value)}
-          placeholder="Enter interest rate"
-        />
-      </div>
-
-      <div style={{ marginBottom: "10px" }}>
         <label>Duration (Months): </label>
-        <Input
-          type="number"
+        <Select
           value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-          placeholder="Enter duration in months"
-        />
+          onChange={(value) => setDuration(value)}
+          style={{ width: 120 }}
+        >
+          <Select.Option value={3}>3 Months</Select.Option>
+          <Select.Option value={6}>6 Months</Select.Option>
+          <Select.Option value={12}>12 Months</Select.Option>
+        </Select>
       </div>
 
       <Title level={3}>Results</Title>
       <p>Min Down Payment: {downPayment.toFixed(2)}</p>
       <p>Balance Amount: {balanceAmount.toFixed(2)}</p>
-      <p>Service Charge (5%): {serviceCharge.toFixed(2)}</p>
-      <p>Loan Amount: {loanAmount.toFixed(2)}</p>
+      <p>Loan Amount: {(loanAmount + totalInterest).toFixed(2)}</p>
       <p>Total Interest: {totalInterest.toFixed(2)}</p>
+      <p>Interest Rate: {parsedInterestRate}%</p>
 
       {/* Highlighting Rental */}
       <p style={{ fontSize: "1.5em", fontWeight: "bold", color: "#00008B" }}>
